@@ -1,0 +1,18 @@
+int runexperiments(std::string configuration, unsigned int round, unsigned int iteration);
+void populate(std::string configuration);
+double calculategeomeanExecutionTime(std::string configuration);
+double calculategeomeanEDP(std::string configuration);
+int isan18dimconfiguration(std::string configuration);
+void extractConfiguration(std::string configuration, int* buffer18);
+double cycleTime(std::string configuration);
+double EPCI(std::string configuration);
+double PipelineLeakage(std::string configuration);
+double getcacheleak(unsigned int size);
+unsigned int getdl1size(std::string configuration);
+unsigned int getil1size(std::string configuration);
+unsigned int getl2size(std::string configuration);
+double cacheleak(std::string configuration);
+double getaccessenergy(unsigned int size);
+double calculateExecutionTime(std::string configuration, std::string benchmarkprefix);
+double calculateEDP(std::string configuration, std::string benchmarkprefix);
+std::string generateNextConfigurationProposal(std::string currentconfiguration, std::string bestEXECconfiguration, std::string bestEDPconfiguration, int optimizeforEXEC, int optimizeforEDP);
