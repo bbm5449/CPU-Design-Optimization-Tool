@@ -14,8 +14,6 @@
 #include "431project.h"
 #include "431projectUtils.h"
 
-using namespace std;
-
 
 /*
  * Returns 1 if valid, else 0
@@ -83,8 +81,6 @@ int validateConfiguration(std::string configuration){
     }
     else if (il1size == 64*1024 && (configurationDimsAsInts[15] + 1) != (4 + offset)){
       returnValue = 0;
-      cout << "fail" << endl;
-      cout << "offset: " << offset << endl;
     }
     // The ul2 sizes and ul2 latencies are linked as follows
     unsigned int l2size = getl2size(configuration);
@@ -136,15 +132,202 @@ std::string YourProposalFunction(std::string currentconfiguration, std::string b
    * will produce configurations that, while properly formatted, violate specified project constraints
    */    
   
-  produces an essentially random proposal
+  // produces an essentially random proposal
   std::stringstream ss;
-  for(int dim = 0; dim<17; ++dim){
-    ss << rand()%GLOB_dimensioncardinality[dim] << " ";
+  int configurationDimsAsInts[18] = {0};
+  int offset = 0;
+  unsigned int dl1size = 0;
+  unsigned int il1size = 0;
+  unsigned int l2size = 0;
+  if (optimizeforEDP){
+    for(int dim = 0; dim<17; ++dim){
+      switch(dim){
+        case 0:
+          configurationDimsAsInts[0] = rand()%3;
+          ss << configurationDimsAsInts[0] << " ";
+          break;
+        case 1:
+          configurationDimsAsInts[1] = rand()%2;
+          ss << configurationDimsAsInts[1] << " ";
+          break;
+        case 2:
+          configurationDimsAsInts[2] = rand()%2;
+          ss << configurationDimsAsInts[2] << " ";
+          break;
+        case 3:
+          configurationDimsAsInts[3] = rand()%4 + 1;
+          ss << configurationDimsAsInts[3] << " ";
+          break;
+        case 4:
+          configurationDimsAsInts[4] = rand()%4;
+          ss << configurationDimsAsInts[4] << " ";
+          break;
+        case 5:
+          configurationDimsAsInts[5] = rand()%2;
+          ss << configurationDimsAsInts[5] << " ";
+          break;
+        case 6:
+          switch(configurationDimsAsInts[0]){
+            case 0:
+              configurationDimsAsInts[6] = rand()%6 + 3;
+              break;
+            case 1:
+              configurationDimsAsInts[6] = rand()%6 + 2;
+              break;
+            case 2:
+              configurationDimsAsInts[6] = rand()%6 + 1;
+              break;
+          }
+          ss << configurationDimsAsInts[6] << " ";
+          break;
+        case 7:
+          switch(8*configurationDimsAsInts[0]*configurationDimsAsInts[6]){
+            case 2048:
+              configurationDimsAsInts[7] = 2;
+              break;
+            case 32768:
+              configurationDimsAsInts[7] = rand()%2;
+              break;
+            case 65536:
+              configurationDimsAsInts[7] = 0;
+              break;
+            default: 
+              configurationDimsAsInts[7] = rand()%3;
+          }
+          ss << configurationDimsAsInts[7] << " ";
+          break;
+        case 8:
+          switch(configurationDimsAsInts[0]){
+            case 0:
+              configurationDimsAsInts[8] = rand()%6 + 3;
+              break;
+            case 1:
+              configurationDimsAsInts[8] = rand()%6 + 2;
+              break;
+            case 2:
+              configurationDimsAsInts[8] = rand()%6 + 1;
+              break;
+          }
+          ss << configurationDimsAsInts[8] << " ";
+          break;
+        case 9:
+          switch(8*configurationDimsAsInts[0]*configurationDimsAsInts[8]){
+            case 2048:
+              configurationDimsAsInts[9] = 2;
+              break;
+            case 32768:
+              configurationDimsAsInts[9] = rand()%2;
+              break;
+            case 65536:
+              configurationDimsAsInts[9] = 0;
+              break;
+            default: 
+              configurationDimsAsInts[9] = rand()%3;
+          }
+          ss << configurationDimsAsInts[9] << " ";
+          break;
+        case 10:
+          configurationDimsAsInts[10] = rand()%8 + 2;
+          ss << configurationDimsAsInts[10] << " ";
+          break;
+        case 11:
+          configurationDimsAsInts[11] = configurationDimsAsInts[0];
+          ss << configurationDimsAsInts[11] << " ";
+          break;
+        case 12:
+          configurationDimsAsInts[12] = rand()%5;
+          ss << configurationDimsAsInts[12] << " ";
+          break;
+        case 13:
+          configurationDimsAsInts[13] = 2;
+          ss << configurationDimsAsInts[13] << " ";
+          break;
+        case 14:
+          dl1size = 8*configurationDimsAsInts[0]*configurationDimsAsInts[6]*configurationDimsAsInts[7];
+          switch(1 << configurationDimsAsInts[7]){
+            case 1: offset = 0;
+              break;
+            case 2: offset = 1;
+              break;
+            case 4: offset = 2;
+              break;
+          }
+          if (dl1size == 8*1024){
+            configurationDimsAsInts[14] = 1 + offset;
+          } else if (dl1size == 16*1024){
+            configurationDimsAsInts[14] = 2 + offset;
+          }
+          else if (dl1size == 32*1024){
+            configurationDimsAsInts[14] = 3 + offset;
+          }
+          else if (dl1size == 64*1024){
+            configurationDimsAsInts[14] = 4 + offset;
+          }
+          ss << configurationDimsAsInts[14] << " ";
+          break;
+        case 15:
+          il1size = 8*configurationDimsAsInts[0]*configurationDimsAsInts[8]*configurationDimsAsInts[9];
+          switch(1 << configurationDimsAsInts[9]){
+            case 1: offset = 0;
+              break;
+            case 2: offset = 1;
+              break;
+            case 4: offset = 2;
+              break;
+          }
+          if (il1size == 8*1024){
+            configurationDimsAsInts[15] = 1 + offset;
+          } else if (il1size == 16*1024){
+            configurationDimsAsInts[15] = 2 + offset;
+          }
+          else if (il1size == 32*1024){
+            configurationDimsAsInts[15] = 3 + offset;
+          }
+          else if (il1size == 64*1024){
+            configurationDimsAsInts[15] = 4 + offset;
+          }
+          ss << configurationDimsAsInts[15] << " ";
+          break;
+        case 16:
+          l2size = configurationDimsAsInts[10]*configurationDimsAsInts[11]*configurationDimsAsInts[12];
+          switch(1 << configurationDimsAsInts[12]){
+            case 1: offset = -2;
+              break;
+            case 2: offset = -1;
+              break;
+            case 4: offset = 0;
+              break;
+            case 8: offset = 1;
+              break;
+          }
+          if (l2size == 128*1024){
+            configurationDimsAsInts[16] = 2 + offset;
+          } else if (l2size == 256*1024){
+            configurationDimsAsInts[16] = 3 + offset;
+          }
+          else if (l2size == 512*1024){
+            configurationDimsAsInts[16] = 4 + offset;
+          }
+          else if (l2size == 1024*1024){
+            configurationDimsAsInts[16] = 5 + offset;
+          }
+          else if (l2size == 2048*1024){
+            configurationDimsAsInts[16] = 6 + offset;
+          }
+          else{
+            configurationDimsAsInts[16] = 0;
+          }
+          ss << configurationDimsAsInts[16] << " ";
+          break;
+        }
   } 
-  ss << rand()%GLOB_dimensioncardinality[17];
+  ss << rand() % GLOB_dimensioncardinality[17];
   nextconfiguration=ss.str();
-  ss.str("");    
-  std::cout << nextconfiguration << std::endl;
+  ss.str("");  
+  }
+
+  // std::cout << GLOB_baseline.size() << std::endl;
+  // std::cout << nextconfiguration.size() << std::endl;
   return nextconfiguration;
 }
 

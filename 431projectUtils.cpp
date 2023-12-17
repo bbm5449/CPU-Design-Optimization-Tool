@@ -376,6 +376,7 @@ std::string generateNextConfigurationProposal(std::string currentconfiguration, 
       nextconfiguration=YourProposalFunction(currentconfiguration, bestEXECconfiguration, bestEDPconfiguration, optimizeforEXEC, optimizeforEDP);
     } while (!validateConfiguration(nextconfiguration)); // if proposal is invalid, ask again; eases implentation of random search
   }
+  std::cout << nextconfiguration << std::endl;
   return nextconfiguration;
 }
 
